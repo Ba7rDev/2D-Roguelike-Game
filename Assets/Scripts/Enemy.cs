@@ -5,6 +5,7 @@ public class Enemy : CellObject
     public int Health = 3;
     public int BaseDamage = 3;
     public int ExtraDamagePerLevel = 1;
+    public int Defense = 0;
 
     private int m_CurrentHealth;
     private Animator m_Animator;
@@ -31,7 +32,10 @@ public class Enemy : CellObject
 
     public override bool PlayerWantsToEnter()
     {
-        m_CurrentHealth -= 1;
+        int playerStrength = GameManager.Instance.PlayerController.Strength;
+        int damageDealt = Mathf.Max(1, playerStrength - Defense);
+
+        m_CurrentHealth -= damageDealt;
         if (m_CurrentHealth <= 0)
         {
             Destroy(gameObject);
@@ -77,9 +81,12 @@ public class Enemy : CellObject
             GameManager.Instance.PlayerController.TakeDamage();
 
             int currentLevel = GameManager.Instance.CurrentLevel;
-            int totalDamage = BaseDamage + ((currentLevel - 1) * ExtraDamagePerLevel);
+            int rawDamage = BaseDamage + ((currentLevel - 1) * ExtraDamagePerLevel);
 
-            GameManager.Instance.ChangeFood(-totalDamage);
+            int playerDefense = GameManager.Instance.PlayerController.Defense;
+            int finalDamage = Mathf.Max(1, rawDamage - playerDefense);
+
+            GameManager.Instance.ChangeFood(-finalDamage);
         }
         else
         {

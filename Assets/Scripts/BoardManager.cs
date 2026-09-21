@@ -43,6 +43,11 @@ public class BoardManager : MonoBehaviour
     public int MinEnemyCount = 1;
     public int MaxEnemyCount = 2;
 
+    [Header("Item Spawning Settings")]
+    public CellObject[] ItemPrefabs;
+    public int MinItemCount = 0;
+    public int MaxItemCount = 2;
+
     public void Init(int level)
     {
         Width = Mathf.Min(BaseWidth + ((level - 1) / 2) * 2, MaxWidth);
@@ -87,6 +92,7 @@ public class BoardManager : MonoBehaviour
         GenerateWall(level);
         GenerateFood(level);
         GenerateEnemy(level);
+        GenerateItems(level);
     }
 
     public void Clean()
@@ -179,6 +185,26 @@ public class BoardManager : MonoBehaviour
             Enemy selectedPrefab = EnemyPrefabs[Random.Range(0, EnemyPrefabs.Length)];
             Enemy newEnemy = Instantiate(selectedPrefab);
             AddObject(newEnemy, coord);
+        }
+    }
+
+    void GenerateItems(int level)
+    {
+        if (ItemPrefabs == null || ItemPrefabs.Length == 0) return;
+
+        int itemCount = Random.Range(MinItemCount, MaxItemCount + 1);
+
+        for (int i = 0; i < itemCount; ++i)
+        {
+            if (m_EmptyCellsList.Count == 0) break;
+
+            int randomIndex = Random.Range(0, m_EmptyCellsList.Count);
+            Vector2Int coord = m_EmptyCellsList[randomIndex];
+            m_EmptyCellsList.RemoveAt(randomIndex);
+
+            CellObject selectedPrefab = ItemPrefabs[Random.Range(0, ItemPrefabs.Length)];
+            CellObject newItem = Instantiate(selectedPrefab);
+            AddObject(newItem, coord);
         }
     }
 

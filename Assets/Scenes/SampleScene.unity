@@ -769,6 +769,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0696376158b92fd418c74560b90aad7a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
+  Strength: 1
+  Defense: 0
+  FoodMultiplier: 1
 --- !u!95 &1938256923
 Animator:
   serializedVersion: 7
@@ -875,6 +878,12 @@ MonoBehaviour:
   - {fileID: -287557235044182752, guid: e252e814460b90b41bc544b2d0e01312, type: 3}
   MinEnemyCount: 1
   MaxEnemyCount: 2
+  ItemPrefabs:
+  - {fileID: 8155217534166223951, guid: 6700f27fb3a3190459e3c585e669ae6b, type: 3}
+  - {fileID: 1670448734074685459, guid: af46d5a01af5d234ca2f07962fea9e76, type: 3}
+  - {fileID: 4273893068262142141, guid: db2efec8c1edba140b417db110561d3d, type: 3}
+  MinItemCount: 0
+  MaxItemCount: 2
 --- !u!1 &2088357870
 GameObject:
   m_ObjectHideFlags: 0

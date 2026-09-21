@@ -3,6 +3,11 @@ using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
+    [Header("Stats")]
+    public int Strength = 1;
+    public int Defense = 0;
+    public float FoodMultiplier = 1.0f;
+
     private BoardManager m_Board;
     private Vector2Int m_CellPosition;
     private bool m_IsGameOver;
@@ -19,6 +24,9 @@ public class PlayerController : MonoBehaviour
     public void Init()
     {
         m_IsGameOver = false;
+        Strength = 1;
+        Defense = 0;
+        FoodMultiplier = 1.0f;
     }
 
     public void GameOver()
@@ -58,7 +66,6 @@ public class PlayerController : MonoBehaviour
             }
             return;
         }
-
 
         if (Keyboard.current.spaceKey.wasPressedThisFrame)
         {
