@@ -7,6 +7,9 @@ public class PlayerController : MonoBehaviour
     public int Strength = 1;
     public int Defense = 0;
     public float FoodMultiplier = 1.0f;
+    public int Speed = 10;
+
+    public int CurrentEnergy { get; private set; }
 
     private BoardManager m_Board;
     private Vector2Int m_CellPosition;
@@ -27,6 +30,8 @@ public class PlayerController : MonoBehaviour
         Strength = 1;
         Defense = 0;
         FoodMultiplier = 1.0f;
+        Speed = 10;
+        CurrentEnergy = Speed;
     }
 
     public void GameOver()
@@ -67,8 +72,10 @@ public class PlayerController : MonoBehaviour
             return;
         }
 
+      
         if (Keyboard.current.spaceKey.wasPressedThisFrame)
         {
+            CurrentEnergy += Speed;
             GameManager.Instance.TurnManager.Tick();
             return;
         }
@@ -102,7 +109,13 @@ public class PlayerController : MonoBehaviour
             BoardManager.CellData cellData = m_Board.GetCellData(newCellTarget);
             if (cellData != null && cellData.Passable)
             {
-                GameManager.Instance.TurnManager.Tick();
+                
+                if (CurrentEnergy < 10)
+                {
+                    CurrentEnergy += Speed;
+                }
+
+                CurrentEnergy -= 10;
 
                 if (cellData.ContainedObject == null)
                 {
@@ -117,6 +130,8 @@ public class PlayerController : MonoBehaviour
                 {
                     Attack();
                 }
+
+                GameManager.Instance.TurnManager.Tick();
             }
         }
     }

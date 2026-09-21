@@ -772,6 +772,7 @@ MonoBehaviour:
   Strength: 1
   Defense: 0
   FoodMultiplier: 1
+  Speed: 10
 --- !u!95 &1938256923
 Animator:
   serializedVersion: 7
@@ -882,6 +883,7 @@ MonoBehaviour:
   - {fileID: 8155217534166223951, guid: 6700f27fb3a3190459e3c585e669ae6b, type: 3}
   - {fileID: 1670448734074685459, guid: af46d5a01af5d234ca2f07962fea9e76, type: 3}
   - {fileID: 4273893068262142141, guid: db2efec8c1edba140b417db110561d3d, type: 3}
+  - {fileID: 4462750422259120411, guid: 388a3c363a5b2d84ca27d808910405f2, type: 3}
   MinItemCount: 0
   MaxItemCount: 2
 --- !u!1 &2088357870

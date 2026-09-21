@@ -202,6 +202,7 @@ public class BoardManager : MonoBehaviour
             Vector2Int coord = m_EmptyCellsList[randomIndex];
             m_EmptyCellsList.RemoveAt(randomIndex);
 
+           
             CellObject selectedPrefab = ItemPrefabs[Random.Range(0, ItemPrefabs.Length)];
             CellObject newItem = Instantiate(selectedPrefab);
             AddObject(newItem, coord);

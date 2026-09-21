@@ -6,6 +6,9 @@ public class Enemy : CellObject
     public int BaseDamage = 3;
     public int ExtraDamagePerLevel = 1;
     public int Defense = 0;
+    public int Speed = 10;
+
+    public int CurrentEnergy { get; private set; }
 
     private int m_CurrentHealth;
     private Animator m_Animator;
@@ -28,6 +31,7 @@ public class Enemy : CellObject
     {
         base.Init(coord);
         m_CurrentHealth = Health;
+        CurrentEnergy = 0;
     }
 
     public override bool PlayerWantsToEnter()
@@ -64,6 +68,17 @@ public class Enemy : CellObject
     }
 
     private void TurnHappened()
+    {
+        CurrentEnergy += Speed;
+
+        while (CurrentEnergy >= 10)
+        {
+            CurrentEnergy -= 10;
+            ExecuteEnemyBehavior();
+        }
+    }
+
+    private void ExecuteEnemyBehavior()
     {
         var playerCell = GameManager.Instance.PlayerController.Cell;
         int xDist = playerCell.x - m_Cell.x;

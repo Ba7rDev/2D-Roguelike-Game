@@ -15,7 +15,11 @@ public class GameManager : MonoBehaviour
 
     private int m_FoodAmount = 100;
     private int m_CurrentLevel = 1;
+
+  
     private Label m_FoodLabel;
+    private Label m_SpeedLabel;
+    private Label m_EnergyLabel;
 
     private VisualElement m_GameOverPanel;
     private Label m_GameOverMessage;
@@ -36,8 +40,13 @@ public class GameManager : MonoBehaviour
         TurnManager = new TurnManager();
         TurnManager.OnTick += OnTurnHappen;
 
-        m_FoodLabel = UIDoc.rootVisualElement.Q<Label>("FoodLabel");
-        m_GameOverPanel = UIDoc.rootVisualElement.Q<VisualElement>("GameOverPanel");
+       
+        var root = UIDoc.rootVisualElement;
+        m_FoodLabel = root.Q<Label>("FoodLabel");
+        m_SpeedLabel = root.Q<Label>("SpeedLabel");
+        m_EnergyLabel = root.Q<Label>("EnergyLabel");
+
+        m_GameOverPanel = root.Q<VisualElement>("GameOverPanel");
         m_GameOverMessage = m_GameOverPanel.Q<Label>("GameOverMessage");
 
         StartNewGame();
@@ -49,13 +58,14 @@ public class GameManager : MonoBehaviour
 
         m_CurrentLevel = 1;
         m_FoodAmount = 100;
-        m_FoodLabel.text = "Food : " + m_FoodAmount;
 
         BoardManager.Clean();
         BoardManager.Init(m_CurrentLevel);
 
         PlayerController.Init();
         PlayerController.Spawn(BoardManager, new Vector2Int(1, 1));
+
+        UpdateStatsUI();
     }
 
     public void NewLevel()
@@ -64,23 +74,42 @@ public class GameManager : MonoBehaviour
         BoardManager.Clean();
         BoardManager.Init(m_CurrentLevel);
         PlayerController.Spawn(BoardManager, new Vector2Int(1, 1));
+
+        UpdateStatsUI();
     }
 
     void OnTurnHappen()
     {
         ChangeFood(-1);
+        UpdateStatsUI();
     }
 
     public void ChangeFood(int amount)
     {
         m_FoodAmount += amount;
-        m_FoodLabel.text = "Food : " + m_FoodAmount;
 
         if (m_FoodAmount <= 0)
         {
             PlayerController.GameOver();
             m_GameOverPanel.style.visibility = Visibility.Visible;
             m_GameOverMessage.text = "Game Over!\n\nSurvived " + m_CurrentLevel + " levels\n\nPress Enter to Restart";
+        }
+
+        UpdateStatsUI();
+    }
+
+    public void UpdateStatsUI()
+    {
+        if (m_FoodLabel != null)
+            m_FoodLabel.text = "Food: " + m_FoodAmount;
+
+        if (PlayerController != null)
+        {
+            if (m_SpeedLabel != null)
+                m_SpeedLabel.text = "Speed: " + PlayerController.Speed;
+
+            if (m_EnergyLabel != null)
+                m_EnergyLabel.text = "Energy: " + PlayerController.CurrentEnergy;
         }
     }
 }
