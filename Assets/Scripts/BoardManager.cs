@@ -15,8 +15,15 @@ public class BoardManager : MonoBehaviour
     private Grid m_Grid;
     private List<Vector2Int> m_EmptyCellsList;
 
-    public int Width;
-    public int Height;
+    [Header("Board Size Settings")]
+    public int BaseWidth = 8;
+    public int BaseHeight = 8;
+    public int MaxWidth = 20;
+    public int MaxHeight = 20;
+
+    [HideInInspector] public int Width;
+    [HideInInspector] public int Height;
+
     public Tile[] GroundTiles;
     public Tile[] WallTiles;
 
@@ -36,8 +43,12 @@ public class BoardManager : MonoBehaviour
     public int MinEnemyCount = 1;
     public int MaxEnemyCount = 2;
 
-    public void Init()
+    public void Init(int level)
     {
+
+        Width = Mathf.Min(BaseWidth + ((level - 1) / 2) * 2, MaxWidth);
+        Height = Mathf.Min(BaseHeight + ((level - 1) / 2) * 2, MaxHeight);
+
         m_Tilemap = GetComponentInChildren<Tilemap>();
         m_Grid = GetComponentInChildren<Grid>();
 
@@ -75,8 +86,8 @@ public class BoardManager : MonoBehaviour
         m_EmptyCellsList.Remove(endCoord);
 
         GenerateWall();
-        GenerateFood();
-        GenerateEnemy();
+        GenerateFood(level);
+        GenerateEnemy(level);
     }
 
     public void Clean()
@@ -110,7 +121,7 @@ public class BoardManager : MonoBehaviour
     {
         if (WallPrefabs == null || WallPrefabs.Length == 0) return;
 
-        int wallCount = Random.Range(6, 10);
+        int wallCount = Random.Range(Width, Width + 4);
         for (int i = 0; i < wallCount; ++i)
         {
             if (m_EmptyCellsList.Count == 0) break;
@@ -125,11 +136,14 @@ public class BoardManager : MonoBehaviour
         }
     }
 
-    void GenerateFood()
+    void GenerateFood(int level)
     {
         if (FoodPrefabs == null || FoodPrefabs.Length == 0) return;
 
-        int foodCount = Random.Range(MinFoodCount, MaxFoodCount + 1);
+
+        int maxFood = Mathf.Max(1, MaxFoodCount - (level / 2));
+        int minFood = Mathf.Clamp(MinFoodCount - (level / 3), 1, maxFood);
+        int foodCount = Random.Range(minFood, maxFood + 1);
 
         for (int i = 0; i < foodCount; ++i)
         {
@@ -145,11 +159,14 @@ public class BoardManager : MonoBehaviour
         }
     }
 
-    void GenerateEnemy()
+    void GenerateEnemy(int level)
     {
         if (EnemyPrefabs == null || EnemyPrefabs.Length == 0) return;
 
-        int enemyCount = Random.Range(MinEnemyCount, MaxEnemyCount + 1);
+
+        int minEnemies = MinEnemyCount + ((level - 1) / 2);
+        int maxEnemies = MaxEnemyCount + (level - 1);
+        int enemyCount = Random.Range(minEnemies, maxEnemies + 1);
 
         for (int i = 0; i < enemyCount; ++i)
         {
