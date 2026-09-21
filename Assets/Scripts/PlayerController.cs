@@ -9,6 +9,8 @@ public class PlayerController : MonoBehaviour
 
     private Animator m_Animator;
 
+    public Vector2Int Cell => m_CellPosition;
+
     private void Awake()
     {
         m_Animator = GetComponent<Animator>();
@@ -30,12 +32,20 @@ public class PlayerController : MonoBehaviour
         MoveTo(cell);
     }
 
-    
     public void Attack()
     {
         if (m_Animator != null)
         {
             m_Animator.SetTrigger("Attack");
+        }
+    }
+
+
+    public void TakeDamage()
+    {
+        if (m_Animator != null)
+        {
+            m_Animator.SetTrigger("Hurt");
         }
     }
 
@@ -92,7 +102,6 @@ public class PlayerController : MonoBehaviour
                 }
                 else
                 {
-                   
                     Attack();
                 }
             }

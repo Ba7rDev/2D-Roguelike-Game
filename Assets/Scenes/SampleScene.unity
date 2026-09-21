@@ -739,6 +739,10 @@ MonoBehaviour:
   - {fileID: 2093583770395108240, guid: 9b47d5b7519537c4ebdc827d8c1e79b8, type: 3}
   MinFoodCount: 3
   MaxFoodCount: 8
+  EnemyPrefabs:
+  - {fileID: -287557235044182752, guid: e252e814460b90b41bc544b2d0e01312, type: 3}
+  MinEnemyCount: 1
+  MaxEnemyCount: 2
 --- !u!1 &2088357870
 GameObject:
   m_ObjectHideFlags: 0

@@ -31,6 +31,11 @@ public class BoardManager : MonoBehaviour
     public int MinFoodCount = 3;
     public int MaxFoodCount = 8;
 
+    [Header("Enemy Spawning Settings")]
+    public Enemy[] EnemyPrefabs;
+    public int MinEnemyCount = 1;
+    public int MaxEnemyCount = 2;
+
     public void Init()
     {
         m_Tilemap = GetComponentInChildren<Tilemap>();
@@ -63,16 +68,15 @@ public class BoardManager : MonoBehaviour
             }
         }
 
- 
         m_EmptyCellsList.Remove(new Vector2Int(1, 1));
 
-       
         Vector2Int endCoord = new Vector2Int(Width - 2, Height - 2);
         AddObject(Instantiate(ExitCellPrefab), endCoord);
         m_EmptyCellsList.Remove(endCoord);
 
         GenerateWall();
         GenerateFood();
+        GenerateEnemy();
     }
 
     public void Clean()
@@ -138,6 +142,26 @@ public class BoardManager : MonoBehaviour
             FoodObject selectedPrefab = FoodPrefabs[Random.Range(0, FoodPrefabs.Length)];
             FoodObject newFood = Instantiate(selectedPrefab);
             AddObject(newFood, coord);
+        }
+    }
+
+    void GenerateEnemy()
+    {
+        if (EnemyPrefabs == null || EnemyPrefabs.Length == 0) return;
+
+        int enemyCount = Random.Range(MinEnemyCount, MaxEnemyCount + 1);
+
+        for (int i = 0; i < enemyCount; ++i)
+        {
+            if (m_EmptyCellsList.Count == 0) break;
+
+            int randomIndex = Random.Range(0, m_EmptyCellsList.Count);
+            Vector2Int coord = m_EmptyCellsList[randomIndex];
+            m_EmptyCellsList.RemoveAt(randomIndex);
+
+            Enemy selectedPrefab = EnemyPrefabs[Random.Range(0, EnemyPrefabs.Length)];
+            Enemy newEnemy = Instantiate(selectedPrefab);
+            AddObject(newEnemy, coord);
         }
     }
 
