@@ -11,6 +11,8 @@ public class GameManager : MonoBehaviour
 
     public TurnManager TurnManager { get; private set; }
 
+    public int CurrentLevel => m_CurrentLevel;
+
     private int m_FoodAmount = 100;
     private int m_CurrentLevel = 1;
     private Label m_FoodLabel;

@@ -3,6 +3,9 @@ using UnityEngine;
 public class Enemy : CellObject
 {
     public int Health = 3;
+    public int BaseDamage = 3;
+    public int ExtraDamagePerLevel = 1;
+
     private int m_CurrentHealth;
     private Animator m_Animator;
 
@@ -66,16 +69,17 @@ public class Enemy : CellObject
 
         if ((xDist == 0 && absYDist == 1) || (yDist == 0 && absXDist == 1))
         {
-     
             if (m_Animator != null)
             {
                 m_Animator.SetTrigger("Attack");
             }
 
- 
             GameManager.Instance.PlayerController.TakeDamage();
 
-            GameManager.Instance.ChangeFood(-3);
+            int currentLevel = GameManager.Instance.CurrentLevel;
+            int totalDamage = BaseDamage + ((currentLevel - 1) * ExtraDamagePerLevel);
+
+            GameManager.Instance.ChangeFood(-totalDamage);
         }
         else
         {
