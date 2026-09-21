@@ -7,6 +7,13 @@ public class PlayerController : MonoBehaviour
     private Vector2Int m_CellPosition;
     private bool m_IsGameOver;
 
+    private Animator m_Animator;
+
+    private void Awake()
+    {
+        m_Animator = GetComponent<Animator>();
+    }
+
     public void Init()
     {
         m_IsGameOver = false;
@@ -20,8 +27,16 @@ public class PlayerController : MonoBehaviour
     public void Spawn(BoardManager boardManager, Vector2Int cell)
     {
         m_Board = boardManager;
-        m_CellPosition = cell;
-        transform.position = m_Board.CellToWorld(cell);
+        MoveTo(cell);
+    }
+
+    
+    public void Attack()
+    {
+        if (m_Animator != null)
+        {
+            m_Animator.SetTrigger("Attack");
+        }
     }
 
     private void Update()
@@ -74,6 +89,11 @@ public class PlayerController : MonoBehaviour
                 {
                     MoveTo(newCellTarget);
                     cellData.ContainedObject.PlayerEntered();
+                }
+                else
+                {
+                   
+                    Attack();
                 }
             }
         }
