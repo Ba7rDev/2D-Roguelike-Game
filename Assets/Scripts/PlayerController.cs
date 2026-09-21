@@ -9,13 +9,8 @@ public class PlayerController : MonoBehaviour
     public void Spawn(BoardManager boardManager, Vector2Int cell)
     {
         m_Board = boardManager;
-        MoveTo(cell);
-    }
-
-    public void MoveTo(Vector2Int cell)
-    {
         m_CellPosition = cell;
-        transform.position = m_Board.CellToWorld(m_CellPosition);
+        transform.position = m_Board.CellToWorld(cell);
     }
 
     private void Update()
@@ -47,12 +42,23 @@ public class PlayerController : MonoBehaviour
         if (hasMoved)
         {
             BoardManager.CellData cellData = m_Board.GetCellData(newCellTarget);
-
             if (cellData != null && cellData.Passable)
             {
                 GameManager.Instance.TurnManager.Tick();
                 MoveTo(newCellTarget);
+
+               
+                if (cellData.ContainedObject != null)
+                {
+                    cellData.ContainedObject.PlayerEntered();
+                }
             }
         }
+    }
+
+    private void MoveTo(Vector2Int newCellTarget)
+    {
+        m_CellPosition = newCellTarget;
+        transform.position = m_Board.CellToWorld(m_CellPosition);
     }
 }
