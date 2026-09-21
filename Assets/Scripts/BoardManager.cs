@@ -20,10 +20,13 @@ public class BoardManager : MonoBehaviour
     public Tile[] GroundTiles;
     public Tile[] WallTiles;
 
+    [Header("Wall Settings")]
+    public WallObject[] WallPrefabs;
+
     [Header("Food Spawning Settings")]
-    public FoodObject[] FoodPrefabs; 
-    public int MinFoodCount = 3;    
-    public int MaxFoodCount = 8;  
+    public FoodObject[] FoodPrefabs;
+    public int MinFoodCount = 3;
+    public int MaxFoodCount = 8;
 
     public void Init()
     {
@@ -57,16 +60,44 @@ public class BoardManager : MonoBehaviour
             }
         }
 
-        
         m_EmptyCellsList.Remove(new Vector2Int(1, 1));
 
+        GenerateWall();
         GenerateFood();
+    }
+
+    void AddObject(CellObject obj, Vector2Int coord)
+    {
+        CellData data = m_BoardData[coord.x, coord.y];
+        obj.transform.position = CellToWorld(coord);
+        data.ContainedObject = obj;
+        obj.Init(coord);
+    }
+
+    void GenerateWall()
+    {
+        if (WallPrefabs == null || WallPrefabs.Length == 0) return;
+
+        int wallCount = Random.Range(6, 10);
+        for (int i = 0; i < wallCount; ++i)
+        {
+            if (m_EmptyCellsList.Count == 0) break;
+
+            int randomIndex = Random.Range(0, m_EmptyCellsList.Count);
+            Vector2Int coord = m_EmptyCellsList[randomIndex];
+            m_EmptyCellsList.RemoveAt(randomIndex);
+
+         
+            WallObject selectedPrefab = WallPrefabs[Random.Range(0, WallPrefabs.Length)];
+
+            WallObject newWall = Instantiate(selectedPrefab);
+            AddObject(newWall, coord);
+        }
     }
 
     void GenerateFood()
     {
         if (FoodPrefabs == null || FoodPrefabs.Length == 0) return;
-
 
         int foodCount = Random.Range(MinFoodCount, MaxFoodCount + 1);
 
@@ -76,18 +107,22 @@ public class BoardManager : MonoBehaviour
 
             int randomIndex = Random.Range(0, m_EmptyCellsList.Count);
             Vector2Int coord = m_EmptyCellsList[randomIndex];
-
             m_EmptyCellsList.RemoveAt(randomIndex);
 
-            CellData data = m_BoardData[coord.x, coord.y];
-
-
             FoodObject selectedPrefab = FoodPrefabs[Random.Range(0, FoodPrefabs.Length)];
-
             FoodObject newFood = Instantiate(selectedPrefab);
-            newFood.transform.position = CellToWorld(coord);
-            data.ContainedObject = newFood;
+            AddObject(newFood, coord);
         }
+    }
+
+    public Tile GetCellTile(Vector2Int cellIndex)
+    {
+        return m_Tilemap.GetTile<Tile>(new Vector3Int(cellIndex.x, cellIndex.y, 0));
+    }
+
+    public void SetCellTile(Vector2Int cellIndex, Tile tile)
+    {
+        m_Tilemap.SetTile(new Vector3Int(cellIndex.x, cellIndex.y, 0), tile);
     }
 
     public Vector3 CellToWorld(Vector2Int cellIndex)
