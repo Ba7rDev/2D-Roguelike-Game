@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UIElements;
+using UnityEngine.InputSystem;
 
 public class GameManager : MonoBehaviour
 {
@@ -17,12 +18,19 @@ public class GameManager : MonoBehaviour
     private int m_CurrentLevel = 1;
 
   
+    private VisualElement m_MainMenuPanel;
+    private VisualElement m_PauseMenuPanel;
+    private VisualElement m_GameOverPanel;
+
+
     private Label m_FoodLabel;
     private Label m_SpeedLabel;
     private Label m_EnergyLabel;
-
-    private VisualElement m_GameOverPanel;
     private Label m_GameOverMessage;
+
+  
+    public bool IsInMainMenu { get; private set; } = true;
+    public bool IsPaused { get; private set; } = false;
 
     private void Awake()
     {
@@ -40,21 +48,67 @@ public class GameManager : MonoBehaviour
         TurnManager = new TurnManager();
         TurnManager.OnTick += OnTurnHappen;
 
-       
         var root = UIDoc.rootVisualElement;
+
+     
+        m_MainMenuPanel = root.Q<VisualElement>("MainMenuPanel");
+        m_PauseMenuPanel = root.Q<VisualElement>("PauseMenuPanel");
+        m_GameOverPanel = root.Q<VisualElement>("GameOverPanel");
+
+      
         m_FoodLabel = root.Q<Label>("FoodLabel");
         m_SpeedLabel = root.Q<Label>("SpeedLabel");
         m_EnergyLabel = root.Q<Label>("EnergyLabel");
+        m_GameOverMessage = m_GameOverPanel?.Q<Label>("GameOverMessage");
 
-        m_GameOverPanel = root.Q<VisualElement>("GameOverPanel");
-        m_GameOverMessage = m_GameOverPanel.Q<Label>("GameOverMessage");
+    
+        if (m_MainMenuPanel != null)
+        {
+            m_MainMenuPanel.Q<Button>("StartGameButton")?.RegisterCallback<ClickEvent>(evt => StartNewGame());
+            m_MainMenuPanel.Q<Button>("QuitButton")?.RegisterCallback<ClickEvent>(evt => QuitGame());
+        }
 
-        StartNewGame();
+       
+        if (m_PauseMenuPanel != null)
+        {
+            m_PauseMenuPanel.Q<Button>("ResumeButton")?.RegisterCallback<ClickEvent>(evt => TogglePause());
+            m_PauseMenuPanel.Q<Button>("MainMenuButton")?.RegisterCallback<ClickEvent>(evt => ShowMainMenu());
+            m_PauseMenuPanel.Q<Button>("QuitButton")?.RegisterCallback<ClickEvent>(evt => QuitGame());
+        }
+
+        ShowMainMenu();
+    }
+
+    private void Update()
+    {
+        if (!IsInMainMenu && Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
+        {
+            TogglePause();
+        }
+    }
+
+    public void ShowMainMenu()
+    {
+        IsInMainMenu = true;
+        IsPaused = false;
+        Time.timeScale = 1f;
+
+        BoardManager.Clean();
+
+        if (m_MainMenuPanel != null) m_MainMenuPanel.style.visibility = Visibility.Visible;
+        if (m_PauseMenuPanel != null) m_PauseMenuPanel.style.visibility = Visibility.Hidden;
+        if (m_GameOverPanel != null) m_GameOverPanel.style.visibility = Visibility.Hidden;
     }
 
     public void StartNewGame()
     {
-        m_GameOverPanel.style.visibility = Visibility.Hidden;
+        IsInMainMenu = false;
+        IsPaused = false;
+        Time.timeScale = 1f;
+
+        if (m_MainMenuPanel != null) m_MainMenuPanel.style.visibility = Visibility.Hidden;
+        if (m_PauseMenuPanel != null) m_PauseMenuPanel.style.visibility = Visibility.Hidden;
+        if (m_GameOverPanel != null) m_GameOverPanel.style.visibility = Visibility.Hidden;
 
         m_CurrentLevel = 1;
         m_FoodAmount = 100;
@@ -66,6 +120,20 @@ public class GameManager : MonoBehaviour
         PlayerController.Spawn(BoardManager, new Vector2Int(1, 1));
 
         UpdateStatsUI();
+    }
+
+    public void TogglePause()
+    {
+        if (IsInMainMenu) return;
+
+        IsPaused = !IsPaused;
+
+        if (m_PauseMenuPanel != null)
+        {
+            m_PauseMenuPanel.style.visibility = IsPaused ? Visibility.Visible : Visibility.Hidden;
+        }
+
+        Time.timeScale = IsPaused ? 0f : 1f;
     }
 
     public void NewLevel()
@@ -91,8 +159,11 @@ public class GameManager : MonoBehaviour
         if (m_FoodAmount <= 0)
         {
             PlayerController.GameOver();
-            m_GameOverPanel.style.visibility = Visibility.Visible;
-            m_GameOverMessage.text = "Game Over!\n\nSurvived " + m_CurrentLevel + " levels\n\nPress Enter to Restart";
+            if (m_GameOverPanel != null)
+            {
+                m_GameOverPanel.style.visibility = Visibility.Visible;
+                m_GameOverMessage.text = "Game Over!\n\nSurvived " + m_CurrentLevel + " levels\n\nPress Enter to Restart";
+            }
         }
 
         UpdateStatsUI();
@@ -111,5 +182,16 @@ public class GameManager : MonoBehaviour
             if (m_EnergyLabel != null)
                 m_EnergyLabel.text = "Energy: " + PlayerController.CurrentEnergy;
         }
+    }
+
+    public void QuitGame()
+    {
+        Debug.Log("Quit button triggered.");
+
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#else
+        Application.Quit();
+#endif
     }
 }
