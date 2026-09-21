@@ -6,7 +6,8 @@
     <ui:Label text="Label" name="SpeedLabel" style="position: absolute; justify-content: flex-start; align-items: center; right: 0; bottom: auto; left: 0; top: 0; color: rgb(229, 229, 229); -unity-font-definition: url(&quot;project://database/Assets/Roguelike2D/TutorialAssets/Fonts/PressStart2P-Regular.ttf?fileID=12800000&amp;guid=b284a6525342f44599e9ce79e37c2d61&amp;type=3#PressStart2P-Regular&quot;);"/>
     <ui:Label text="Label" name="EnergyLabel" style="position: absolute; justify-content: flex-start; align-items: center; right: 2px; bottom: auto; left: -1px; top: 35px; color: rgb(229, 229, 229); -unity-font-definition: url(&quot;project://database/Assets/Roguelike2D/TutorialAssets/Fonts/PressStart2P-Regular.ttf?fileID=12800000&amp;guid=b284a6525342f44599e9ce79e37c2d61&amp;type=3#PressStart2P-Regular&quot;);"/>
     <ui:VisualElement name="MainMenuPanel" style="flex-grow: 1; position: absolute; top: 0; right: 0; bottom: 0; left: 0; background-color: rgba(0, 0, 0, 0.314); align-items: center; justify-content: center; -unity-font-definition: url(&quot;project://database/Assets/Roguelike2D/TutorialAssets/Fonts/PressStart2P-Regular.ttf?fileID=12800000&amp;guid=b284a6525342f44599e9ce79e37c2d61&amp;type=3#PressStart2P-Regular&quot;);">
-        <ui:Button text="Start Game" name="StartGameButton"/>
+        <ui:Button text="Continue" name="ContinueButton"/>
+        <ui:Button text="Start Game" name="NewGameButton"/>
         <ui:Button text="Quit" name="QuitButton"/>
     </ui:VisualElement>
     <ui:VisualElement name="PauseMenuPanel" style="flex-grow: 1; position: absolute; top: 0; right: 0; bottom: 0; left: 0; background-color: rgba(0, 0, 0, 0.314); align-items: center; justify-content: center; -unity-font-definition: url(&quot;project://database/Assets/Roguelike2D/TutorialAssets/Fonts/PressStart2P-Regular.ttf?fileID=12800000&amp;guid=b284a6525342f44599e9ce79e37c2d61&amp;type=3#PressStart2P-Regular&quot;);">
