@@ -40,7 +40,6 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-
     public void TakeDamage()
     {
         if (m_Animator != null)
@@ -57,6 +56,13 @@ public class PlayerController : MonoBehaviour
             {
                 GameManager.Instance.StartNewGame();
             }
+            return;
+        }
+
+
+        if (Keyboard.current.spaceKey.wasPressedThisFrame)
+        {
+            GameManager.Instance.TurnManager.Tick();
             return;
         }
 
