@@ -707,6 +707,7 @@ MonoBehaviour:
   WallTiles:
   - {fileID: 11400000, guid: 2e80c1654412f554d80719e922b56c94, type: 2}
   - {fileID: 11400000, guid: a2acd78b318629d44b5a6eece8485c56, type: 2}
+  ExitCellPrefab: {fileID: 5023242102966298650, guid: 1c0a231a1f4acc244b1573ea14f08041, type: 3}
   WallPrefabs:
   - {fileID: 7540527445205470150, guid: 23466def0ed9e0a4bac76a18d07265b4, type: 3}
   - {fileID: 7540527445205470150, guid: 163933dbdc0345f4ba0bd758dc0c78e6, type: 3}

@@ -20,6 +20,9 @@ public class BoardManager : MonoBehaviour
     public Tile[] GroundTiles;
     public Tile[] WallTiles;
 
+    [Header("Exit Cell Settings")]
+    public ExitCellObject ExitCellPrefab;
+
     [Header("Wall Settings")]
     public WallObject[] WallPrefabs;
 
@@ -60,10 +63,35 @@ public class BoardManager : MonoBehaviour
             }
         }
 
+ 
         m_EmptyCellsList.Remove(new Vector2Int(1, 1));
+
+       
+        Vector2Int endCoord = new Vector2Int(Width - 2, Height - 2);
+        AddObject(Instantiate(ExitCellPrefab), endCoord);
+        m_EmptyCellsList.Remove(endCoord);
 
         GenerateWall();
         GenerateFood();
+    }
+
+    public void Clean()
+    {
+        if (m_BoardData == null)
+            return;
+
+        for (int y = 0; y < Height; ++y)
+        {
+            for (int x = 0; x < Width; ++x)
+            {
+                var cellData = m_BoardData[x, y];
+                if (cellData != null && cellData.ContainedObject != null)
+                {
+                    Destroy(cellData.ContainedObject.gameObject);
+                }
+                SetCellTile(new Vector2Int(x, y), null);
+            }
+        }
     }
 
     void AddObject(CellObject obj, Vector2Int coord)
@@ -87,9 +115,7 @@ public class BoardManager : MonoBehaviour
             Vector2Int coord = m_EmptyCellsList[randomIndex];
             m_EmptyCellsList.RemoveAt(randomIndex);
 
-         
             WallObject selectedPrefab = WallPrefabs[Random.Range(0, WallPrefabs.Length)];
-
             WallObject newWall = Instantiate(selectedPrefab);
             AddObject(newWall, coord);
         }
